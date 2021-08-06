@@ -17,6 +17,8 @@ contract DeferredEquityPlan {
     // @TODO: Set the `unlock_time` to be 365 days from now
     // Your code here!
     uint unlock_time = start_time + 365 days;
+    
+    uint fakenow = now;
 
     uint public distributed_shares = 0; // starts at 0
 
@@ -24,6 +26,10 @@ contract DeferredEquityPlan {
         human_resources = msg.sender;
         employee = _employee;
     }
+    
+  function fastforward() public {
+    fakenow += 367 days;
+  }
 
     function distribute() public {
         require(msg.sender == human_resources || msg.sender == employee, "You are not authorized to execute this contract.");
@@ -33,7 +39,7 @@ contract DeferredEquityPlan {
         // 1: `unlock_time` is less than or equal to `now`
         // 2: `distributed_shares` is less than the `total_shares`
         // Your code here!
-        require (unlock_time <= now, "The vesting period has not been reached to distribute shares.");
+        require (unlock_time <= fakenow, "The vesting period has not been reached to distribute shares.");
         require (distributed_shares < total_shares, "There are no more shares left to distribute.");
 
         // @TODO: Add 365 days to the `unlock_time`
@@ -42,7 +48,7 @@ contract DeferredEquityPlan {
         // @TODO: Calculate the shares distributed by using the function (now - start_time) / 365 days * the annual distribution
         // Make sure to include the parenthesis around (now - start_time) to get accurate results!
         // Your code here!
-        distributed_shares += (now - start_time) / 365 days * annual_distribution;
+        distributed_shares += (fakenow - start_time) / 365 days * annual_distribution;
 
         // double check in case the employee does not cash out until after 5+ years
         if (distributed_shares > 1000) {
